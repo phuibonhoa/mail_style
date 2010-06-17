@@ -89,11 +89,9 @@ module MailStyle
       end
 
       def absolutize_image_sources(document)
-        if default_url_options[:host].present?
-          document.css('img').each do |img|
-            src = img['src']
-            img['src'] = src.gsub(src, absolutize_url(src))
-          end
+        document.css('img').each do |img|
+          src = img['src']
+          img['src'] = src.gsub(src, absolutize_url(src))
         end
 
         document
@@ -140,18 +138,16 @@ module MailStyle
         document
       end
 
-      # Update image urls
-      def update_image_urls(style)
-        if default_url_options[:host].present?
-          # Replace urls in stylesheets
-          style.gsub!($1, absolutize_url($1, 'stylesheets')) if style[/url\(['"]?(.*)['"]?\)/i]
-        end
-
+      # Replace urls in stylesheets
+      def update_image_urls(style)        
+        style.gsub!($1, absolutize_url($1, 'stylesheets')) if style[/url\(['"]?(.*)['"]?\)/i]
         style
       end
 
        # Absolutize URL (Absolutize? Seriously?)
       def absolutize_url(url, base_path = '')
+        return url unless default_url_options[:host].present?
+        
         original_url = url
 
         unless original_url[URI::regexp(%w[http https])]
