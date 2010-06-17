@@ -104,15 +104,15 @@ module MailStyle
         document = Nokogiri::HTML.parse(DOCTYPE + body)
 
         # Set some meta stuff
-        html = document.at_css('html')
+        html = document.css('html').first
         html['xmlns'] = 'http://www.w3.org/1999/xhtml'
 
         # Create <head> element if missing
-        head = document.at_css('head')
+        head = document.css('head').first
 
         unless head.present?
           head = Nokogiri::XML::Node.new('head', document)
-          document.at_css('body').add_previous_sibling(head)
+          document.css('body').first.add_previous_sibling(head)
         end
 
         # Add utf-8 content type meta tag
